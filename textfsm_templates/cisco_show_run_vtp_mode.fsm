@@ -1,0 +1,4 @@
+Value SHOW_RUN_VTP_MODE (\S*)
+
+Start
+  ^vtp mode ${SHOW_RUN_VTP_MODE}

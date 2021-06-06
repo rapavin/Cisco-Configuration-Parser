@@ -1,0 +1,4 @@
+Value SHOW_RUN_HOSTNAME (\S*)
+
+Start
+  ^hostname ${SHOW_RUN_HOSTNAME}

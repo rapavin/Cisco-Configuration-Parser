@@ -1,0 +1,4 @@
+Value SHOW_RUN_VTP_DOMAIN (\S*)
+
+Start
+  ^vtp domain ${SHOW_RUN_VTP_DOMAIN}
