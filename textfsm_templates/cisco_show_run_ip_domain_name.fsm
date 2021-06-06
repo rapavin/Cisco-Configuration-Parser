@@ -1,0 +1,4 @@
+Value SHOW_RUN_IP_DOMAIN_NAME (\S*)
+
+Start
+  ^ip domain name ${SHOW_RUN_IP_DOMAIN_NAME}

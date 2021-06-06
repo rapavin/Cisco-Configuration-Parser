@@ -1,0 +1,7 @@
+Value SHOW_RUN_L2_VLANS_ID (\S*)
+Value SHOW_RUN_L2_VLANS_NAME (\S*)
+
+Start
+  ^! -> Record
+  ^vlan ${SHOW_RUN_L2_VLANS_ID}
+  ^ name ${SHOW_RUN_L2_VLANS_NAME}
