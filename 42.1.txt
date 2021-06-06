@@ -1,0 +1,1010 @@
+﻿HOWARD_MDF_3850_1#sh run
+Building configuration...
+
+Current configuration : 29491 bytes
+!
+! Last configuration change at 10:09:26 CDT Wed Apr 7 2021 by larrybirchfield
+! NVRAM config last updated at 10:10:17 CDT Wed Apr 7 2021 by larrybirchfield
+!
+version 16.9
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+service internal
+service compress-config
+service sequence-numbers
+service counters max age 5
+service call-home
+no platform punt-keepalive disable-kernel-core
+!
+hostname HOWARD_MDF_3850_1
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+logging buffered 64000 informational
+logging console informational
+no logging monitor
+enable secret 5 $1$KsxJ$m0sb5S8ASi1dSX90l7tri.
+!
+aaa new-model
+!
+!
+aaa group server tacacs+ tacacs-servers
+ server-private 10.5.198.206 key 7 1104390B04145A5F082E79767D6265
+ server-private 10.5.198.207 key 7 151F2B02172C7A7724376770465646
+ ip tacacs source-interface Vlan254
+!
+aaa authentication fail-message ^CCCC
+************************************************************************
+*                                                                      *
+*                   You have failed Authentication                     *
+*                                                                      *
+*   All of your actions on this device are currently being logged      *
+*                                                                      *
+*   Successive login failures may result in a suspension of access     *
+*                                                                      *
+************************************************************************
+^C
+aaa authentication login default group tacacs-servers local
+aaa authentication enable default group tacacs-servers enable
+aaa authorization console
+aaa authorization exec default group tacacs-servers local 
+aaa accounting commands 0 default start-stop group tacacs-servers
+aaa accounting commands 1 default start-stop group tacacs-servers
+aaa accounting commands 15 default start-stop group tacacs-servers
+aaa accounting network default start-stop group tacacs-servers
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone CST -6 0
+clock summer-time CDT recurring
+clock calendar-valid
+switch 1 provision ws-c3850-12xs
+!
+!
+!
+!
+!         
+coap http enable
+!
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+no ip source-route
+ip routing
+!
+!
+!
+!
+!
+!
+!
+ip multicast-routing 
+ip domain name misdtx.org
+ip dhcp excluded-address 10.42.240.1 10.42.240.10
+!
+ip dhcp pool VOIP
+ network 10.42.240.0 255.255.254.0
+ default-router 10.42.240.1 
+ option 150 ip 10.0.240.13 10.0.240.12 
+ dns-server 10.5.199.201 10.5.199.202 
+ domain-name misdtx.org
+ lease 5
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!         
+vtp domain MISD_HOWARD
+vtp mode transparent
+!
+!
+!
+crypto pki trustpoint TP-self-signed-1815764071
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1815764071
+ revocation-check none
+ rsakeypair TP-self-signed-1815764071
+!
+crypto pki trustpoint DNAC-CA
+ enrollment mode ra
+ enrollment terminal
+ usage ssl-client
+ revocation-check crl none
+ source interface Vlan254
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+!
+!
+crypto pki certificate chain TP-self-signed-1815764071
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 31383135 37363430 3731301E 170D3137 30363237 31363438 
+  35385A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 38313537 
+  36343037 3130819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100CF72 7B2C56EF 31A519D8 5365396C 2F9C9DE3 89ACE3F3 F95DD89E B4FF9E57 
+  5EFD4FA3 761FF12C 5606E6AB FB52045D BD575CFB 66A15056 FB20C004 B680148E 
+  B070BF68 7EC2B795 BF04FC05 0CE18C4E 6228DAD7 7273176D 41F83C68 90B8BADE 
+  E62A8AE2 AEBBB7D4 4EA797F5 06CF261D 211D51CA 1BFEEA4E 4C2B1DB3 EE6BB701 
+  25DD0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 14AEB904 D87A04F7 A687E272 0A447022 C5DF52E6 B1301D06 
+  03551D0E 04160414 AEB904D8 7A04F7A6 87E2720A 447022C5 DF52E6B1 300D0609 
+  2A864886 F70D0101 05050003 81810017 28E12D99 C71DC803 B933AD44 73F9EA80 
+  9BE502A3 F8FAE385 5A4E5F3F 453999DA 8257AA0C 1CE78BCA B8A3A845 C8B33DB0 
+  36B4150E 1210ED96 64BC8F99 376B6BC4 C266D70C 720D5C36 126EEF29 03F6A31D 
+  F26DDD9D 9C618788 EB5E1405 E15C8B7F 0B59252A 67DEBFD9 68F860FA 7B06C930 
+  12A5C26C 0BABC338 AA308BA0 27D6F9
+        quit
+crypto pki certificate chain DNAC-CA
+ certificate ca 00F977C12CBD451224
+  30820397 3082027F A0030201 02020900 F977C12C BD451224 300D0609 2A864886 
+  F70D0101 0B050030 62312D30 2B060355 04030C24 35313733 63633339 2D613363 
+  642D3034 30352D31 3731642D 32373536 31646435 64356463 31163014 06035504 
+  0A0C0D43 6973636F 20537973 74656D73 31193017 06035504 0B0C1043 6973636F 
+  20444E41 2043656E 74657230 1E170D32 30303632 35313933 3834345A 170D3233 
+  30333232 31393338 34345A30 62312D30 2B060355 04030C24 35313733 63633339 
+  2D613363 642D3034 30352D31 3731642D 32373536 31646435 64356463 31163014 
+  06035504 0A0C0D43 6973636F 20537973 74656D73 31193017 06035504 0B0C1043 
+  6973636F 20444E41 2043656E 74657230 82012230 0D06092A 864886F7 0D010101 
+  05000382 010F0030 82010A02 82010100 B9144D15 6F8A836E 02B91A0F F82B40EF 
+  8B7900D0 737AA78E DFA74406 7009112B 0034197E A4BDCFCA 22EA2521 9932A0BD 
+  56573DFC F2C2E1D3 73CB3EC2 25E8BE6C 3340B3DE 728BE60B 370B9C85 38DADEED 
+  C8F7A95B 4504BF8E 239AAFAE 87C20588 09B59DF3 79F3AB85 C21F7C19 52464DFA 
+  6B6795D8 97730B48 FB1901F5 C65432F5 D39B0085 0F28E6CA 9D88571D 0EEF624B 
+  34B46331 F1D4FD10 B22074D0 D0BEF456 3EAE1B71 D40B9F55 60D18470 DD004F0F 
+  E78573C8 A540213A E8C77467 72C40D62 43949C48 48C42223 44EC28C9 9EB36531 
+  C2A18621 3351D68C 15678C7B B63FA8F1 61E32BFB 3510F43F 6FB8F002 E253BD5D 
+  F9AD0727 87A567BA 20282FE7 FF15014D 02030100 01A35030 4E301D06 03551D0E 
+  04160414 9E5ADD4B D1E06F25 B75831C4 A5BDBDAB 0F7B273C 301F0603 551D2304 
+  18301680 149E5ADD 4BD1E06F 25B75831 C4A5BDBD AB0F7B27 3C300C06 03551D13 
+  04053003 0101FF30 0D06092A 864886F7 0D01010B 05000382 01010077 D8C9CD7F 
+  F97C2661 4114C370 1EE2F645 19E12804 09347150 A38540CD 42E2CEC9 6AF448F9 
+  F1B883E4 406EEBDD 74F84EE0 C18C00AE 4230195B 2E335972 68C66549 21BCC5DF 
+  43F658EA C38F4677 D1A716DF 9799A0E8 0F6776C2 28219ACE 438A24FB 95E5CA39 
+  9507E8EA C1A9DD70 64B696B0 19D180A6 704EE7C2 05D09E07 9518AB9C 6CC4E4F9 
+  00D00562 28DCA384 491E9778 3B1F2804 3634E9EF 3376BA55 4CB5180C 7B8E19B9 
+  07B9C1DB A83BA2F0 2545845F 554C24B1 5E89EDB7 0334A37A AA96C34E E09CF68C 
+  19716BD1 271046C7 B3F6923C CDA98215 E21C313C 57FD4E1B 03B72E62 3263C9C7 
+  7DAACC95 36EAE593 574A3722 B3BB28DC ED1AEED8 2754DCB1 C57960
+        quit
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+        quit
+!
+port-channel load-balance src-dst-ip
+license boot level ipbasek9
+!
+!
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree loopguard default
+spanning-tree extend system-id
+spanning-tree uplinkfast
+spanning-tree backbonefast
+!
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause sfp-config-mismatch
+errdisable recovery cause gbic-invalid
+errdisable recovery cause l2ptguard
+errdisable recovery cause psecure-violation
+errdisable recovery cause port-mode-failure
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause pppoe-ia-rate-limit
+errdisable recovery cause mac-limit
+errdisable recovery cause vmps
+errdisable recovery cause storm-control
+errdisable recovery cause inline-power
+errdisable recovery cause arp-inspection
+errdisable recovery cause loopback
+errdisable recovery cause psp
+errdisable recovery interval 60
+!
+username nett3ch privilege 15 secret 5 $1$YmVQ$njB/ZFz1KeDqgsTMtIO.41
+!
+redundancy
+ mode sso
+!
+!
+!
+!
+!
+transceiver type all
+ monitoring
+hw-switch switch 1 logging onboard message
+!
+vlan 2
+ name MDF_DATA
+!
+vlan 3
+ name MDF_DATA_2
+!
+vlan 10
+ name IDF1_DATA
+!
+vlan 20
+ name IDF2_DATA
+!
+vlan 21
+ name IDF2_DATA_2
+!
+vlan 30
+ name IDF3_DATA_1
+!
+vlan 31
+ name IDF3_DATA_2
+!
+vlan 100 
+!
+vlan 150
+ name SECURITY
+!
+vlan 230
+ name NON-HUMAN_DEVICE
+!
+vlan 240
+ name VOICE
+!
+vlan 242
+ name STEAM
+!
+vlan 250
+ name SECURITY_2
+!
+vlan 254
+ name MANAGEMENT
+!         
+vlan 999
+ name DEADEND
+lldp run
+!
+!
+class-map match-any system-cpp-police-topology-control
+  description Topology control
+class-map match-any system-cpp-police-sw-forward
+  description Sw forwarding, L2 LVX data, LOGGING
+class-map match-any CALL-SIGNALING-QUEUE
+ match dscp cs3 
+class-map match-any system-cpp-default
+  description Inter FED, EWLC control, EWLC data
+class-map match-any system-cpp-police-sys-data
+  description Learning cache ovfl, High Rate App, Exception, EGR Exception, NFL SAMPLED DATA, RPF Failed
+class-map match-any MISSION-CRITICAL-QUEUE
+ match dscp af31 
+class-map match-any VIDEO-CONFERENCING-QUEUE
+ match dscp af41 
+class-map match-any NETWORK-MANAGEMENT-QUEUE
+ match dscp cs7 
+class-map match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map match-any SCAVENGER-QUEUE
+ match dscp cs1 
+class-map match-any system-cpp-police-l2lvx-control
+  description L2 LVX control packets
+class-map match-any VOICE-QUEUE
+ match dscp ef 
+class-map match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map match-any BULK-DATA
+ match access-group name BULK-DATA
+class-map match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map match-any system-cpp-police-multicast
+  description Transit Traffic and MCAST Data
+class-map match-any system-cpp-police-l2-control
+  description L2 control
+class-map match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map match-any system-cpp-police-data
+  description ICMP redirect, ICMP_GEN and BROADCAST
+class-map match-any DEFAULT
+ match access-group name DEFAULT
+class-map match-any system-cpp-police-stackwise-virt-control
+  description Stackwise Virtual
+class-map match-any BULK-DATA-QUEUE
+ match dscp af21 
+class-map match-any VOICE
+ match access-group name VOICE
+class-map match-any SCAVENGER
+ match access-group name SCAVENGER
+class-map match-any non-client-nrt-class
+class-map match-any NETWORK-MANAGEMENT
+ match access-group name NETWORK-MANAGEMENT
+class-map match-any system-cpp-police-routing-control
+  description Routing control and Low Latency
+class-map match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
+class-map match-any VIDEO-CONFERENCING
+ match access-group name VIDEO-CONFERENCING
+class-map match-any system-cpp-police-dhcp-snooping
+  description DHCP snooping
+class-map match-any MISSION-CRITICAL
+ match access-group name MISSION-CRITICAL
+class-map match-any CALL-SIGNALING
+ match access-group name CALL-SIGNALING
+class-map match-any system-cpp-police-system-critical
+  description System Critical and Gold Pkt
+!
+policy-map system-cpp-policy
+policy-map LAN_EDGE_OUT
+ class VOICE-QUEUE
+ class CALL-SIGNALING-QUEUE
+  bandwidth remaining percent 10 
+ class NETWORK-MANAGEMENT-QUEUE
+  bandwidth remaining percent 10 
+ class VIDEO-CONFERENCING-QUEUE
+  bandwidth remaining percent 10 
+ class MISSION-CRITICAL-QUEUE
+  bandwidth remaining percent 10 
+ class BULK-DATA-QUEUE
+  bandwidth remaining percent 4 
+ class SCAVENGER-QUEUE
+  bandwidth remaining percent 1 
+ class class-default
+  bandwidth remaining percent 25 
+policy-map port_child_policy
+ class non-client-nrt-class
+  bandwidth remaining ratio 10
+policy-map LAN_EDGE_IN
+ description SET DSCP VALUES
+ class CALL-SIGNALING
+  set dscp cs3
+ class NETWORK-MANAGEMENT
+  set dscp cs7
+ class VOICE
+  set dscp ef
+ class VIDEO-CONFERENCING
+  set dscp af41
+ class MISSION-CRITICAL
+  set dscp af31
+ class BULK-DATA
+  set dscp af21
+ class SCAVENGER
+  set dscp cs1
+ class DEFAULT
+  set dscp default
+!
+! 
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+interface Port-channel1
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 2,3,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ shutdown
+ spanning-tree link-type point-to-point
+ ip dhcp snooping trust
+!
+interface Port-channel2
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 2,3,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ shutdown
+ spanning-tree link-type point-to-point
+ ip dhcp snooping trust
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ negotiation auto
+!
+interface TenGigabitEthernet1/0/1
+ description HOWARD_MDF_3650_1(5) Ten 1/1/3
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 2,3,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/2
+ description HOWARD_MDF_3650_1(5) Ten 2/1/3
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 2,3,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/3
+ description HOWARD_MDF_3650_2(5) Ten 1/1/3
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 2,3,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/4
+ description HOWARD_MDF_3650_2(5) Ten 2/1/3
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 2,3,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/5
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,100,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/6
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/7
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 20,21,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/8
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 20,21,150,230,240,242,250,254
+ switchport mode trunk
+!
+interface TenGigabitEthernet1/0/9
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 21,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/10
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 30,150,230,240,242,250,254
+ switchport mode trunk
+ switchport nonegotiate
+ logging event trunk-status
+ udld port aggressive
+ spanning-tree link-type point-to-point
+!
+interface TenGigabitEthernet1/0/11
+ switchport access vlan 3
+ switchport mode access
+ spanning-tree portfast
+!
+interface TenGigabitEthernet1/0/12
+ description Link to MISD-CORE-1 (g1/2/44)   
+ no switchport
+ ip address 10.42.255.2 255.255.255.252
+ ip pim sparse-dense-mode
+ speed nonegotiate
+!
+interface TenGigabitEthernet1/1/1
+!
+interface TenGigabitEthernet1/1/2
+!
+interface TenGigabitEthernet1/1/3
+!
+interface TenGigabitEthernet1/1/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan2
+ description MDF_DATA
+ ip address 10.42.2.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.198.230
+ ip helper-address 10.5.199.190
+ ip directed-broadcast 100
+ ip pim sparse-dense-mode
+ ip access-group VPN_BLOCK in
+!
+interface Vlan3
+ description MDF_DATA_2
+ ip address 10.42.3.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.199.190
+ ip directed-broadcast 100
+ ip pim sparse-dense-mode
+ ip access-group VPN_BLOCK in
+!
+interface Vlan10
+ description IDF1_DATA
+ ip address 10.42.10.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.199.190
+ ip directed-broadcast 100
+ ip pim sparse-dense-mode
+ ip access-group VPN_BLOCK in
+!
+interface Vlan20
+ description IDF2_DATA
+ ip address 10.42.20.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.199.190
+ ip directed-broadcast 100
+ ip pim sparse-dense-mode
+ ip access-group VPN_BLOCK in
+!
+interface Vlan21
+ description IDF2_DATA_2
+ ip address 10.42.21.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.198.230
+ ip helper-address 10.5.199.190
+ ip pim sparse-dense-mode
+ ip access-group VPN_BLOCK in
+!
+interface Vlan30
+ ip address 10.42.30.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.199.190
+ ip directed-broadcast 100
+ ip pim sparse-dense-mode
+ ip access-group VPN_BLOCK in
+!
+interface Vlan31
+ no ip address
+ ip helper-address 10.5.199.127
+!
+interface Vlan100
+ ip address 10.42.100.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.199.190
+ ip pim sparse-dense-mode
+ shutdown
+!
+interface Vlan150
+ description SECURITY
+ ip address 10.150.42.1 255.255.255.0
+ ip pim sparse-dense-mode
+!
+interface Vlan230
+ description NON-HUMAN_DEVICE
+ ip address 10.42.230.1 255.255.254.0
+ ip helper-address 10.5.198.173
+ ip helper-address 10.5.199.190
+ ip pim sparse-dense-mode
+!
+interface Vlan240
+ description VOICE
+ ip address 10.42.240.1 255.255.254.0
+ ip pim sparse-dense-mode
+!
+interface Vlan242
+ description STEAM
+ ip address 10.42.242.1 255.255.254.0
+ ip pim sparse-dense-mode
+!
+interface Vlan250
+ description SECURITY
+ ip address 10.42.250.1 255.255.255.0
+ ip helper-address 10.5.198.173
+ ip pim sparse-dense-mode
+!
+interface Vlan252
+ description Fire_System
+ ip address 10.42.252.1 255.255.255.0
+ ip pim sparse-dense-mode
+!
+interface Vlan254
+ description MANAGEMENT
+ ip address 10.42.254.1 255.255.255.0
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip pim sparse-dense-mode
+ no ip route-cache
+!
+!
+router eigrp 6922
+ network 10.0.0.0
+ network 10.42.0.1 0.0.0.0
+ network 10.42.1.1 0.0.0.0
+ network 10.42.2.0 0.0.0.255
+ network 10.42.2.1 0.0.0.0
+ network 10.42.3.0 0.0.0.255
+ network 10.42.3.1 0.0.0.0
+ network 10.42.4.0 0.0.0.255
+ network 10.42.10.0 0.0.0.255
+ network 10.42.10.1 0.0.0.0
+ network 10.42.11.0 0.0.0.255
+ network 10.42.11.1 0.0.0.0
+ network 10.42.20.0 0.0.0.255
+ network 10.42.20.1 0.0.0.0
+ network 10.42.21.0 0.0.0.255
+ network 10.42.21.1 0.0.0.0
+ network 10.42.30.0 0.0.0.255
+ network 10.42.100.0 0.0.0.255
+ network 10.42.102.1 0.0.0.0
+ network 10.42.103.1 0.0.0.0
+ network 10.42.110.1 0.0.0.0
+ network 10.42.111.1 0.0.0.0
+ network 10.42.120.1 0.0.0.0
+ network 10.42.121.1 0.0.0.0
+ network 10.42.230.0 0.0.1.255
+ network 10.42.240.0 0.0.1.255
+ network 10.42.242.0 0.0.0.255
+ network 10.42.250.0 0.0.0.255
+ network 10.42.252.1 0.0.0.0
+ network 10.42.254.0 0.0.0.255
+ network 10.42.255.0 0.0.0.3
+ network 10.57.255.68 0.0.0.3
+ network 10.103.49.1 0.0.0.0
+ network 10.150.42.1 0.0.0.0
+ auto-summary
+ eigrp router-id 10.42.0.1
+ eigrp stub connected summary
+!
+ip forward-protocol nd
+ip tcp synwait-time 5
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip http client source-interface Vlan254
+ip route 0.0.0.0 0.0.0.0 10.42.255.1
+ip tacacs source-interface Vlan254 
+ip ssh time-out 60
+ip ssh source-interface Vlan254
+ip ssh logging events
+ip ssh version 2
+!
+ip access-list extended BULK-DATA
+ remark FTP
+ permit tcp any any eq ftp
+ permit tcp any any eq ftp-data
+ remark TFTP
+ permit udp any any eq tftp
+ remark SMTP/SECURE SMTP
+ permit tcp any any eq smtp
+ permit tcp any any eq 465
+ remark IMAP/SECURE IMAP
+ permit tcp any any eq 143
+ permit tcp any any eq 993
+ remark POP3/SECURE POP3
+ permit tcp any any eq pop3
+ permit tcp any any eq 995
+ip access-list extended CALL-SIGNALING
+ permit tcp any any range 2000 2002
+ permit tcp any any range 5060 5061
+ permit udp any any range 5060 5061
+ip access-list extended DEFAULT
+ remark EXPLICIT CLASS-DEFAULT
+ permit ip any any
+ip access-list extended MISSION-CRITICAL
+ remark Defined for later use
+ip access-list extended NETWORK-MANAGEMENT
+ remark EIGRP
+ permit eigrp any any
+ remark CAPWAP
+ permit udp any any range 5246 5247
+ remark NETFLOW
+ permit udp any any eq 2055
+ remark NTP
+ permit udp any any eq ntp
+ remark SNMP
+ permit udp any any range snmp snmptrap
+ permit tcp any any eq 162
+ remark SYSLOG
+ permit udp any any eq syslog
+ remark SSH
+ permit tcp any any eq 22
+ip access-list extended SCAVENGER
+ remark KAZAA
+ permit tcp any any eq 1214
+ permit udp any any eq 1214
+ remark MICROSOFT DIRECT X GAMING
+ permit tcp any any range 2300 2400
+ permit udp any any range 2300 2400
+ remark APPLE ITUNES MUSIC SHARING
+ permit tcp any any eq 3689
+ permit udp any any eq 3689
+ remark BITTORRENT
+ permit tcp any any range 6881 6999
+ remark YAHOO GAMES
+ permit tcp any any eq 11999
+ remark MSN GAMING ZONE
+ permit tcp any any range 28800 29100
+ip access-list extended VIDEO-CONFERENCING
+ remark RTP
+ permit udp any any range 16384 32767
+ip access-list extended VOICE
+ permit udp any any range 16384 32767
+ip access-list extended VPN_BLOCK
+ deny   esp any any
+ deny   gre any any
+ deny   udp any any eq non500-isakmp
+ deny   udp any any eq 1723
+ deny   udp any any eq 1701
+ deny   udp any any eq 51
+ deny   udp any any eq isakmp
+ deny   udp any any eq 47
+ permit ip any any
+!
+logging host 10.5.199.183
+logging host 10.190.0.5
+access-list 55 permit 10.57.2.30
+!
+!
+snmp-server group default v3 priv 
+snmp-server group solarwinds v3 auth write v1default access 55
+snmp-server community s0l@rfl@r3 RO
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps flowmon
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps eigrp
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps vtp
+snmp-server enable traps vlancreate
+snmp-server enable traps vlandelete
+snmp-server enable traps port-security
+snmp-server enable traps license
+snmp-server enable traps cpu threshold
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps stackwise
+snmp-server enable traps fru-ctrl
+snmp-server enable traps flash insertion
+snmp-server enable traps flash removal
+snmp-server enable traps energywise
+snmp-server enable traps power-ethernet police
+snmp-server enable traps entity
+snmp-server enable traps envmon fan shutdown supply temperature status
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps ipsla
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps ipsec cryptomap add
+snmp-server enable traps ipsec cryptomap delete
+snmp-server enable traps ipsec cryptomap attach
+snmp-server enable traps ipsec cryptomap detach
+snmp-server enable traps ipsec tunnel start
+snmp-server enable traps ipsec tunnel stop
+snmp-server enable traps ipsec too-many-sas
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps event-manager
+snmp-server enable traps hsrp
+snmp-server enable traps ipmulticast
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps bridge newroot topologychange
+snmp-server enable traps stpx inconsistency root-inconsistency loop-inconsistency
+snmp-server enable traps syslog
+snmp-server enable traps vlan-membership
+snmp-server enable traps errdisable
+snmp-server enable traps rf
+snmp-server enable traps transceiver all
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps mac-notification change move threshold
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server host 10.190.0.5 version 2c public 
+!
+!
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+banner login ^CCCC                                                           
+******************************************************************        
+WARNING - Unauthorized USE strictly FORBIDDEN !!!!                        
+******************************************************************        
+^C
+banner motd ^CCCC                                                            
+************************************************************************  
+*                      AUTHORIZED PERSONNEL ONLY                       *  
+*                                                                      *  
+* This is a proprietary system, NOT for public or personal use.  All   *  
+* work products, communications, files, data or information directly   *  
+* or indirectly created, input or accessed on this system are or may   *  
+* become the sole property of the Mansfield ISD.  This system is       *  
+* actively monitored and accessed by Mansfield ISD. By logging onto    *  
+* this system, the user consents to such monitoring and access.        *  
+* USE OF THIS SYSTEM WITHOUT OR IN EXCESS OF PROPER AUTHORIZATION      *  
+* MAY SUBJECT THE USER TO DISCIPLINE AND/OR CIVIL AND CRIMINAL         *  
+* PENALTIES.                                                           *  
+*                                                                      *  
+************************************************************************  
+^C
+!
+line con 0
+ exec-timeout 30 0
+ logging synchronous
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ exec-timeout 20 0
+ logging synchronous
+ length 0
+ transport input ssh
+line vty 5 15
+ exec-timeout 20 0
+ logging synchronous
+ length 0
+ transport input ssh
+!
+ntp logging
+ntp source Vlan254
+ntp server 10.57.2.45
+!
+wsma agent exec
+ profile httplistener
+ profile httpslistener
+!
+wsma agent config
+ profile httplistener
+ profile httpslistener
+!
+wsma agent filesys
+ profile httplistener
+ profile httpslistener
+!         
+wsma agent notify
+ profile httplistener
+ profile httpslistener
+!
+!
+wsma profile listener httplistener
+ transport http
+!
+wsma profile listener httpslistener
+ transport https
+!
+end
+
+HOWARD_MDF_3850_1#sh vlan 
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Te1/0/2, Te1/0/4, Te1/0/6, Te1/0/8
+2    MDF_DATA                         active    
+3    MDF_DATA_2                       active    Te1/0/11
+10   IDF1_DATA                        active    
+20   IDF2_DATA                        active    
+21   IDF2_DATA_2                      active    
+30   IDF3_DATA_1                      active    
+31   IDF3_DATA_2                      active    
+100  VLAN0100                         active    
+150  SECURITY                         active    
+230  NON-HUMAN_DEVICE                 active    
+240  VOICE                            active    
+242  STEAM                            active    
+250  SECURITY_2                       active    
+254  MANAGEMENT                       active    
+999  DEADEND                          active    
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup 
+1004 fddinet-default                  act/unsup 
+1005 trnet-default                    act/unsup 
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0   
+2    enet  100002     1500  -      -      -        -    -        0      0   
+3    enet  100003     1500  -      -      -        -    -        0      0   
+10   enet  100010     1500  -      -      -        -    -        0      0   
+20   enet  100020     1500  -      -      -        -    -        0      0   
+21   enet  100021     1500  -      -      -        -    -        0      0   
+30   enet  100030     1500  -      -      -        -    -        0      0   
+31   enet  100031     1500  -      -      -        -    -        0      0   
+100  enet  100100     1500  -      -      -        -    -        0      0   
+150  enet  100150     1500  -      -      -        -    -        0      0   
+230  enet  100230     1500  -      -      -        -    -        0      0   
+240  enet  100240     1500  -      -      -        -    -        0      0   
+242  enet  100242     1500  -      -      -        -    -        0      0   
+          
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+250  enet  100250     1500  -      -      -        -    -        0      0   
+254  enet  100254     1500  -      -      -        -    -        0      0   
+999  enet  100999     1500  -      -      -        -    -        0      0   
+1002 fddi  101002     1500  -      -      -        -    -        0      0   
+1003 tr    101003     1500  -      -      -        -    -        0      0   
+1004 fdnet 101004     1500  -      -      -        ieee -        0      0   
+1005 trnet 101005     1500  -      -      -        ibm  -        0      0   
+
+Remote SPAN VLANs
+------------------------------------------------------------------------------
+
+
+Primary Secondary Type              Ports
+------- --------- ----------------- ------------------------------------------
+
