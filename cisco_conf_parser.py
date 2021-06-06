@@ -1,5 +1,6 @@
 import textfsm
 import os
+import csv
 
 class Cisco_Configuration_parser:
 
@@ -19,11 +20,24 @@ class Cisco_Configuration_parser:
 				regex_table_fsm_data = textfsm.TextFSM(all_textfsm_templates)
 				data = regex_table_fsm_data.ParseText(reading_running_conf_read_string)
 				try:
-					switch_data[each_textfsm_templates_list[0:-4]] = data[0]
+					if len(data)==1:
+						switch_data[each_textfsm_templates_list[0:-4]] = data[0]
+					elif len(data)==0:
+						switch_data[each_textfsm_templates_list[0:-4]] = ["N/A"]
+					elif len(data)>1:
+						switch_data[each_textfsm_templates_list[0:-4]] = data
 				except:
-					switch_data[each_textfsm_templates_list[0:-4]] = ["N/A"]
+					pass	
 
 Cisco_Configuration_parser.read_input_file()
 Cisco_Configuration_parser.import_textfsm_template()
 
-print(switch_data)
+with open('services_'+switch_data['cisco_show_run_hostname'][0]+'.txt', 'w') as csv_file:
+	writer = csv.writer(csv_file)
+	writer.writerow(["HOSTNAME",switch_data['cisco_show_run_hostname'][0]])
+	writer.writerow(["VTP MODE",switch_data['cisco_show_run_vtp_mode'][0]])
+	writer.writerow(["VTP DOMAIN",switch_data['cisco_show_run_vtp_domain'][0]])
+	writer.writerow(["DOMAIN NAME",switch_data['cisco_show_run_ip_domain_name'][0]])
+	writer.writerow(["CLOCK INFORMATION",str(switch_data['cisco_show_run_clock']).replace("[","").replace("]","").replace('"',"").replace("'","".replace('"',""))])
+	
+#print(switch_data)
