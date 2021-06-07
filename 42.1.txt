@@ -99,7 +99,6 @@ ip routing
 !
 !
 ip multicast-routing 
-ip domain name misdtx.org
 ip dhcp excluded-address 10.42.240.1 10.42.240.10
 !
 ip dhcp pool VOIP
