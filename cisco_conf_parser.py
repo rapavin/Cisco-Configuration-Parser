@@ -29,33 +29,54 @@ class Cisco_Configuration_parser:
 				except:
 					pass	
 
+	def convert_services_result_csv():
+		with open('services_'+switch_data['cisco_show_run_hostname'][0]+'.csv', 'w') as services_csv_file:
+			writer = csv.writer(services_csv_file)
+			writer.writerow(["HOSTNAME",switch_data['cisco_show_run_hostname'][0]])
+			writer.writerow(["SPANNING TREE MODE",switch_data['cisco_show_run_spanning_tree_mode'][0]])
+			writer.writerow(["VERSION",switch_data['cisco_show_run_version'][0]])
+			writer.writerow(["BOOT SYSTEM",switch_data['cisco_show_run_boot_system'][0]])
+			writer.writerow(["ENABLE",switch_data['cisco_show_run_enable_secret'][0]])
+			writer.writerow(["VTP MODE",switch_data['cisco_show_run_vtp_mode'][0]])
+			writer.writerow(["VTP DOMAIN",switch_data['cisco_show_run_vtp_domain'][0]])
+			writer.writerow(["DOMAIN NAME",switch_data['cisco_show_run_ip_domain_name'][0]])
+			if len(switch_data['cisco_show_run_ntp'])>1:
+				writer.writerow([""])
+				for each_switch_data in switch_data['cisco_show_run_ntp']:
+					writer.writerow(["NTP",each_switch_data[0]])
+			else:
+				writer.writerow(["NTP",each_switch_data[0]])
+			if len(switch_data['cisco_show_run_aaa'])>1:
+				writer.writerow([""])
+				for each_switch_data in switch_data['cisco_show_run_aaa']:
+					writer.writerow(["AAA",each_switch_data[0]])
+			else:
+				writer.writerow(["AAA",each_switch_data[0]])
+			if len(switch_data['cisco_show_run_logging'])>1:
+				writer.writerow([""])
+				for each_switch_data in switch_data['cisco_show_run_logging']:
+					writer.writerow(["LOGGING",each_switch_data[0]])
+			else:
+				writer.writerow(["LOGGING",each_switch_data[0]])
+			if len(switch_data['cisco_show_run_clock'])>1:
+				writer.writerow([""])
+				for each_switch_data in switch_data['cisco_show_run_clock']:
+					writer.writerow(["CLOCK INFORMATION",each_switch_data[0]])
+			else:
+				writer.writerow(["CLOCK INFORMATION",each_switch_data[0]])
+			if len(switch_data['cisco_show_run_service'])>1:
+				writer.writerow([""])
+				for each_switch_data in switch_data['cisco_show_run_service']:
+					writer.writerow(["SERVICES",each_switch_data[0]])
+			else:
+				writer.writerow(["SERVICES",each_switch_data[0]])
+
+	def convert_l2_vlan_result_csv():
+		with open('l2_vlans_'+switch_data['cisco_show_run_hostname'][0]+'.csv', 'w') as l2_vlan_csv_file:
+			writer = csv.writer(l2_vlan_csv_file)
+			writer.writerow(["HOSTNAME",switch_data['cisco_show_run_hostname'][0]])
+
+
 Cisco_Configuration_parser.read_input_file()
 Cisco_Configuration_parser.import_textfsm_template()
-
-with open('services_'+switch_data['cisco_show_run_hostname'][0]+'.csv', 'w') as csv_file:
-	writer = csv.writer(csv_file)
-	writer.writerow(["HOSTNAME",switch_data['cisco_show_run_hostname'][0]])
-	writer.writerow(["VERSION",switch_data['cisco_show_run_version'][0]])
-	writer.writerow(["ENABLE",switch_data['cisco_show_run_enable_secret'][0]])
-	writer.writerow(["VTP MODE",switch_data['cisco_show_run_vtp_mode'][0]])
-	writer.writerow(["VTP DOMAIN",switch_data['cisco_show_run_vtp_domain'][0]])
-	writer.writerow(["DOMAIN NAME",switch_data['cisco_show_run_ip_domain_name'][0]])
-	if len(switch_data['cisco_show_run_logging'])>1:
-		writer.writerow([""])
-		for each_switch_data in switch_data['cisco_show_run_logging']:
-			writer.writerow(["LOGGING",each_switch_data[0]])
-	else:
-		writer.writerow(["LOGGING",each_switch_data[0]])
-	if len(switch_data['cisco_show_run_clock'])>1:
-		writer.writerow([""])
-		for each_switch_data in switch_data['cisco_show_run_clock']:
-			writer.writerow(["CLOCK INFORMATION",each_switch_data[0]])
-	else:
-		writer.writerow(["CLOCK INFORMATION",each_switch_data[0]])
-	if len(switch_data['cisco_show_run_service'])>1:
-		writer.writerow([""])
-		for each_switch_data in switch_data['cisco_show_run_service']:
-			writer.writerow(["SERVICES",each_switch_data[0]])
-	else:
-		writer.writerow(["SERVICES",each_switch_data[0]])
-
+Cisco_Configuration_parser.convert_services_result_csv()

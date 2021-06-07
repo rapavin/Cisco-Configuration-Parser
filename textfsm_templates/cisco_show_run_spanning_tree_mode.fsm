@@ -1,0 +1,4 @@
+Value SHOW_RUN_SPANNING_TREE_MODE (\S*)
+
+Start
+  ^spanning-tree mode ${SHOW_RUN_SPANNING_TREE_MODE}

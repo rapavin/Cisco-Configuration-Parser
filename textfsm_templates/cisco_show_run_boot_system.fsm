@@ -1,0 +1,4 @@
+Value SHOW_RUN_BOOT_SYSTEM (.*)
+
+Start
+  ^boot system .* flash:${SHOW_RUN_BOOT_SYSTEM}
