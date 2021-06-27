@@ -18,7 +18,9 @@ class Cisco_Configuration_parser:
 		for each_textfsm_templates_list in textfsm_templates_list:
 			with open("/Users/nethelp/Downloads/textfsm_templates/"+each_textfsm_templates_list) as all_textfsm_templates:
 				regex_table_fsm_data = textfsm.TextFSM(all_textfsm_templates)
-				data = regex_table_fsm_data.ParseText(reading_running_conf_read_string)
+				data = regex_table_fsm_data.ParseText(reading_running_conf_read_string.read())
+				print(data)
+				print(type(data))
 				try:
 					if len(data)==1:
 						switch_data[each_textfsm_templates_list[0:-4]] = data[0]
